@@ -10,12 +10,6 @@ import weather
 import quote
 
 
-# my id : @U0ELCFBC5
-# hals id: @U0ELDPZRR
-
-# general id: C0ELDL76F
-# test_channel id: C0EN4G3JA
-
 def main():
     config = configparser.ConfigParser()
     config.read('config.ini')
@@ -100,13 +94,39 @@ def get_response(message, sender):
     elif message[0].lower() in ['quote']:
         return (quote.get_quote_of_the_day())
     else:
-        return ("I'm sorry %s, I'm afraid I can't do that" % get_sender(sender))
+        return ("I'm sorry %s, I'm afraid I can't do that." % get_sender(sender))
 
 
 # TODO: Obviously include all user names somehow rather than hardcoding
 def get_sender(sender):
-    if sender in '@U0ELCFBC5':
-        return ("Tyler")
+    return get_user_name(sender[0:])
+
+
+def get_user_name(userId):
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+
+    url = "https://slack.com/api/users.info"
+    token = config['slack']['token']
+
+    parameters = {
+        "token": token,
+        "user": userId
+    }
+
+    data = urllib.parse.urlencode(parameters)
+    data = data.encode('utf-8')
+
+    req = urllib.request.Request(url, data)
+    with urllib.request.urlopen(req) as response:
+        downloadedPage = response.read()
+
+    pageJson = json.loads(downloadedPage.decode('utf-8'))
+
+    user = pageJson.get('user')
+    username = user.get('name')
+
+    return username
 
 
 if __name__ == '__main__':
