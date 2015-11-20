@@ -83,9 +83,9 @@ def send_message_to_channel(ws, messageId, message, channel):
 # TODO: more responses
 def get_response(message, sender):
     if message[0].lower() in ['hi', 'hey', 'hello']:
-        return ("Hello %s" % get_sender(sender))
+        return ("Hello %s" % get_user_name(sender))
     elif message[0].lower() in ['shutdown']:
-        return ("Just what do you think you're doing, %s?" % get_sender(sender))
+        return ("Just what do you think you're doing, %s?" % get_user_name(sender))
     elif message[0].lower() in ['weather']:
         if message[1].lower() == 'in':
             return weather.get_weather(' '.join(message[2:]))
@@ -94,12 +94,7 @@ def get_response(message, sender):
     elif message[0].lower() in ['quote']:
         return (quote.get_quote_of_the_day())
     else:
-        return ("I'm sorry %s, I'm afraid I can't do that." % get_sender(sender))
-
-
-# TODO: Obviously include all user names somehow rather than hardcoding
-def get_sender(sender):
-    return get_user_name(sender[0:])
+        return ("I'm sorry %s, I'm afraid I can't do that." % get_user_name(sender))
 
 
 def get_user_name(userId):
